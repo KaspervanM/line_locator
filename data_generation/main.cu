@@ -24,17 +24,17 @@ int main() {
     mapValidLineSegments(d_coordinates, NR_IMAGES, 5, WIDTH, HEIGHT);
 
     // add the line segments to the images
-    uint8_t nrColors = 2;
-    uint8_t h_colors[] = {0, 100};
-    uint8_t nrWidths = 3;
-    uint16_t h_widths[] = {1, 4, 2};
+    const uint8_t nrColors = 2;
+    uint8_t h_colors[nrColors] = {0, 100};
+    const uint8_t nrWidths = 2;
+    uint16_t h_widths[nrWidths] = {1, 1};
     uint8_t *d_colors;
     uint16_t *d_widths;
     cudaMalloc(&d_colors, nrColors * sizeof(uint8_t));
     cudaMalloc(&d_widths, nrWidths * sizeof(uint16_t));
     cudaMemcpy(d_colors, h_colors, nrColors * sizeof(uint8_t), cudaMemcpyHostToDevice);
     cudaMemcpy(d_widths, h_widths, nrWidths * sizeof(uint16_t), cudaMemcpyHostToDevice);
-    drawLine(d_noisyImages, NR_IMAGES, d_coordinates, WIDTH, HEIGHT, nrColors, d_colors, nrWidths, d_widths);
+    drawLine3(d_noisyImages, NR_IMAGES, d_coordinates, WIDTH, HEIGHT, nrColors, d_colors, nrWidths, d_widths);
 
     // Allocate memory for the image on the host
     auto h_image = (uint8_t *) malloc(nrPixels * sizeof(uint8_t));
