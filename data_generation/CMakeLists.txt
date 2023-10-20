@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.26)
-project(data_generation LANGUAGES CXX CUDA)
+project(data_generation CUDA)
 
-# Specify the minimum version of CUDA required
-find_package(CUDA REQUIRED)
+set(CMAKE_CUDA_STANDARD 23)
+
+find_package(CUDAToolkit REQUIRED)
 
 # Add your CUDA source files
 set(CUDA_SOURCE_FILES
@@ -19,16 +20,11 @@ set(LIBRARY_NAME cudaFunctions)
 set(APP_NAME main)
 
 # Create the shared library from CUDA source files
-cuda_add_library(${LIBRARY_NAME} SHARED ${CUDA_SOURCE_FILES})
-
-# Set the appropriate architecture flags (change this to match your GPU)
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-arch=sm_90)
+add_library(${LIBRARY_NAME} SHARED ${CUDA_SOURCE_FILES})
 
 # Link the shared library to CUDA libraries
 target_link_libraries(${LIBRARY_NAME} ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})
-
-# Add the include directory for your CUDA header
-include_directories(${CUDA_INCLUDE_DIRS})
+set_target_properties(${LIBRARY_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 # Create the executable for your main program
 add_executable(${APP_NAME} ${CPP_SOURCE_FILES})
